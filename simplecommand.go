@@ -22,7 +22,7 @@ type Command struct {
 }
 
 // New creates a bare minimum *Command with a name and a short description set
-func New(name, short string) *Command {
+func New(name, short string, opts ...CommandOption) *Command {
 	return &Command{CommandName: name, Short: short}
 }
 
@@ -61,4 +61,18 @@ func (c *Command) Run(ctx context.Context, cd *simplecobra.Commandeer, args []st
 	}
 
 	return nil
+}
+
+type CommandOption func(*Command)
+
+func Long(description string) CommandOption {
+	return func(c *Command) {
+		c.Long = description
+	}
+}
+
+func Deprecated(reason string) CommandOption {
+	return func(c *Command) {
+		c.Deprecated = reason
+	}
 }
