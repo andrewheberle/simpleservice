@@ -23,7 +23,17 @@ type Command struct {
 
 // New creates a bare minimum *Command with a name and a short description set
 func New(name, short string, opts ...CommandOption) *Command {
-	return &Command{CommandName: name, Short: short}
+	c := &Command{
+		CommandName: name,
+		Short:       short,
+	}
+
+	// set options
+	for _, o := range opts {
+		o(c)
+	}
+
+	return c
 }
 
 func (c *Command) Name() string {
