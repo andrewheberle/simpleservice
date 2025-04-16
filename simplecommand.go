@@ -20,6 +20,10 @@ type Command struct {
 	SubCommands []simplecobra.Commander
 }
 
+func New(name, short, long string) *Command {
+	return &Command{CommandName: name, ShortDescription: short, LongDescription: long}
+}
+
 func (c *Command) Name() string {
 	return c.CommandName
 }
