@@ -7,7 +7,9 @@ import (
 	"github.com/bep/simplecobra"
 )
 
-// Command is the basis for creating your own [simplecobra.Commander] quickly
+// Command is the basis for creating your own [simplecobra.Commander] quickly.
+// A [*Command] satisfies the [simplecobra.Commander] interface and is best used
+// by embedding it in your own struct. 
 type Command struct {
 	CommandName string
 	Short       string
