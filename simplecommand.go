@@ -1,5 +1,5 @@
-// The package simpleservice reduces to amount of boilerplate code requried to use [simplecobra]
-package simpleservice
+// The package simplecommand reduces to amount of boilerplate code requried to use [simplecobra]
+package simplecommand
 
 import (
 	"context"
