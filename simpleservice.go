@@ -9,26 +9,30 @@ import (
 
 // Command is the basis for creating your own [simplecobra.Commander] quickly
 type Command struct {
-	Short string
-	Long  string
+	CommandName      string
+	ShortDescription string
+	LongDescription  string
 
 	InitFunction   func(c simplecobra.Commander, cd *simplecobra.Commandeer) error
 	PreRunFunction func(c simplecobra.Commander, this, runner *simplecobra.Commandeer) error
 	RunFunction    func(c simplecobra.Commander, ctx context.Context, cd *simplecobra.Commandeer, args []string) error
 
-	name     string
-	commands []simplecobra.Commander
+	SubCommands []simplecobra.Commander
 }
 
 func (c *Command) Name() string {
-	return c.name
+	return c.CommandName
 }
 
 func (c *Command) Commands() []simplecobra.Commander {
-	return c.commands
+	return c.SubCommands
 }
 
 func (c *Command) Init(cd *simplecobra.Commandeer) error {
+	cmd := cd.CobraCommand
+	cmd.Short = c.ShortDescription
+	cmd.Long = c.LongDescription
+
 	if c.InitFunction != nil {
 		return c.InitFunction(c, cd)
 	}
