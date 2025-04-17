@@ -53,7 +53,7 @@ func (c *ourCommand) Init(cd *simplecobra.Commandeer) error {
 }
 
 func (c *ourCommand) Run(ctx context.Context, cd *simplecobra.Commandeer, args []string) error {
-	fmt.Printf("Ran \"%s\" with the example flag set to \"%s\"\n", cd.CobraCommand.Name(), c.exampleFlag)
+	fmt.Printf("Ran \"%s\" with the example flag set to \"%s\"\n", c.Name(), c.exampleFlag)
 
 	return nil
 }
