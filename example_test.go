@@ -91,6 +91,9 @@ func ExampleNew_subCommand() {
 		&ourCommand{
 			Command: simplecommand.New("sub-command", "This is an example sub-command"),
 		},
+
+		// this sub-command will not appear in help output and will print its deprecated message if run
+		simplecommand.New("old-command", "This is an old-command", simplecommand.Deprecated("this should no longer be used")),
 	}
 
 	// Set up simplecobra
