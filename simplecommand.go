@@ -1,4 +1,6 @@
 // The package simplecommand reduces to amount of boilerplate code requried to use [simplecobra]
+// as it provides a [*Command] type that satisfies the [simplecobra.Commander] that you can embed
+// within your own custom type and implement your own [Init], [PreRun] and [Run] methods as required.
 package simplecommand
 
 import (
@@ -9,16 +11,12 @@ import (
 
 // Command is the basis for creating your own [simplecobra.Commander] quickly.
 // A [*Command] satisfies the [simplecobra.Commander] interface and is best used
-// by embedding it in your own struct. 
+// by embedding it in your own struct.
 type Command struct {
 	CommandName string
 	Short       string
 	Long        string
 	Deprecated  string
-
-	InitFunction   func(c simplecobra.Commander, cd *simplecobra.Commandeer) error
-	PreRunFunction func(c simplecobra.Commander, this, runner *simplecobra.Commandeer) error
-	RunFunction    func(c simplecobra.Commander, ctx context.Context, cd *simplecobra.Commandeer, args []string) error
 
 	SubCommands []simplecobra.Commander
 }
@@ -46,32 +44,23 @@ func (c *Command) Commands() []simplecobra.Commander {
 	return c.SubCommands
 }
 
+// Init is where the short and long description of the command are set and also where command line flags can be handled
 func (c *Command) Init(cd *simplecobra.Commandeer) error {
 	cmd := cd.CobraCommand
 	cmd.Short = c.Short
 	cmd.Long = c.Long
 	cmd.Deprecated = c.Deprecated
 
-	if c.InitFunction != nil {
-		return c.InitFunction(c, cd)
-	}
-
 	return nil
 }
 
+// PreRun is where command line flags have been parsed, so is a place for any initialisation would go for the command
 func (c *Command) PreRun(this, runner *simplecobra.Commandeer) error {
-	if c.PreRunFunction != nil {
-		return c.PreRunFunction(c, this, runner)
-	}
-
 	return nil
 }
 
+// Run is where the command actually does it's work
 func (c *Command) Run(ctx context.Context, cd *simplecobra.Commandeer, args []string) error {
-	if c.RunFunction != nil {
-		return c.RunFunction(c, ctx, cd, args)
-	}
-
 	return nil
 }
 
