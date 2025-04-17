@@ -43,14 +43,14 @@ func main() {
     }
 
     // Set up simplecobra
-	x, err := simplecobra.New(rootCmd)
-	if err != nil {
-		panic(err)
-	}
+    x, err := simplecobra.New(rootCmd)
+    if err != nil {
+        panic(err)
+    }
 
     // run command with the provided args
-	if _, err := x.Execute(context.Background(), os.Args[1:]); err != nil {
-		panic(err)
-	}
+    if _, err := x.Execute(context.Background(), os.Args[1:]); err != nil {
+        panic(err)
+    }
 }
 ```
