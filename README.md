@@ -10,7 +10,7 @@ The main motivation for this module is to only have to implement the bare minimu
 
 ## Example
 
-As an example, your command may only need to a `Run` method as it may not rely on any command-line flags, which would look something like this:
+As an example, your command may only need to implement a `Run` method as it may not rely on any command-line flags, which would look something like this:
 
 ```go
 package main

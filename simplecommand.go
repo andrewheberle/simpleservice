@@ -6,7 +6,9 @@ package simplecommand
 
 import (
 	"context"
+	"strings"
 
+	"github.com/andrewheberle/simpleviper"
 	"github.com/bep/simplecobra"
 )
 
@@ -24,8 +26,18 @@ type Command struct {
 	Long       string
 	Deprecated string
 
+	// Config is used to specify a configuration to file when [WithViper] is passed to [New]
+	Config string
+
+	// Allow missing config file
+	ConfigOptional bool
+
 	// SubCommands holds the list of sub-commands for this command
 	SubCommands []simplecobra.Commander
+
+	viperEnabled        bool
+	viperEnvPrefix      string
+	viperEnvKeyReplacer *strings.Replacer
 }
 
 // New creates a bare minimum [*Command] with a name and a short description set
@@ -68,8 +80,35 @@ func (c *Command) Init(cd *simplecobra.Commandeer) error {
 // PreRun is where command line flags have been parsed, so is a place for any initialisation would go for the command.
 // The default is only suitable for implementing a command that has no reliance on internal state such as command line flags.
 //
+// An exception to this is if [New] was called with the [WithViper] option, which will bind any defined flags
+// in your custom [*Command.Init] method to an internal [*viper.Viper] instance to enable those flags to be set via
+// environment variables or a provided configuration file.
+//
 // See [simplecobra.Commander] for more information.
 func (c *Command) PreRun(this, runner *simplecobra.Commandeer) error {
+	if c.viperEnabled {
+		opts := []simpleviper.Option{
+			simpleviper.WithEnvPrefix(c.viperEnvPrefix),
+			simpleviper.WithEnvKeyReplacer(c.viperEnvKeyReplacer),
+		}
+
+		// add config file if set
+		if c.Config != "" {
+			if c.ConfigOptional {
+				opts = append(opts, simpleviper.WithOptionalConfig(c.Config))
+			} else {
+				opts = append(opts, simpleviper.WithConfig(c.Config))
+			}
+		}
+
+		// bring in env vars and bind to flagset
+		err := simpleviper.New(opts...).Init(this.CobraCommand.Flags())
+		if err != nil {
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -95,5 +134,16 @@ func Long(description string) CommandOption {
 func Deprecated(reason string) CommandOption {
 	return func(c *Command) {
 		c.Deprecated = reason
+	}
+}
+
+// By passing WithViper to [New], this will enable binding of any defined command
+// line flags to an internal [*viper.Viper] instance using [simpleviper] so they
+// can be set via environment variables or a configuration file.
+func WithViper(prefix string, replacer *strings.Replacer) CommandOption {
+	return func(c *Command) {
+		c.viperEnabled = true
+		c.viperEnvPrefix = prefix
+		c.viperEnvKeyReplacer = replacer
 	}
 }
