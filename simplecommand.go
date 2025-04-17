@@ -19,19 +19,16 @@ type Command struct {
 	// CommandName is used as the commands name for any help pages
 	CommandName string
 
-	// Short, Long and Depreciated are set to the commands short and long descriptions for help pages when using
-	// the default Init method however when implementing your own Init method
-	// you should set this yourself.
+	// Short, Long and Depreciated are set to the commands short and long descriptions for help pages when using the default Init method however when implementing your own Init method you should set these yourself.
 	Short      string
 	Long       string
 	Deprecated string
 
-	// Config is used to specify a configuration file used when WithViper is passed to New.
+	// Config specifies a configuration file used when WithViper is passed to New.
 	// Without [WithViper] being passed to New, this has no effect.
 	Config string
 
-	// Allow missing config file when Config is set and the WithViper CommandOption is
-	// provided to New
+	// Allow missing config file when Config is set and the WithViper CommandOption is provided to New
 	ConfigOptional bool
 
 	// SubCommands holds the list of sub-commands for this command
