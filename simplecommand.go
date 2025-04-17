@@ -139,6 +139,8 @@ func Deprecated(reason string) CommandOption {
 // By passing WithViper to [New], this will enable binding of any defined command
 // line flags to an internal [*viper.Viper] instance using [simpleviper] so they
 // can be set via environment variables or a configuration file.
+// See [viper.SetEnvPrefix] for details on the provided prefix and [viper.SetEnvKeyReplacer]
+// for details on the replacer argument.
 func WithViper(prefix string, replacer *strings.Replacer) CommandOption {
 	return func(c *Command) {
 		c.viperEnabled = true
