@@ -26,10 +26,12 @@ type Command struct {
 	Long       string
 	Deprecated string
 
-	// Config is used to specify a configuration to file when [WithViper] is passed to [New]
+	// Config is used to specify a configuration file used when [WithViper] is passed to [New].
+	// Without [WithViper] being passed to [New], this has no effect.
 	Config string
 
-	// Allow missing config file
+	// Allow missing config file when Config is set and the [WithViper] [CommandOption] is
+	// provided to [New]
 	ConfigOptional bool
 
 	// SubCommands holds the list of sub-commands for this command
