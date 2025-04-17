@@ -35,6 +35,41 @@ func ExampleNew() {
 	//   -h, --help   help for example-command
 }
 
+func ExampleLong() {
+	// Here we create a simple command that does nothing
+	command := simplecommand.New("example-command",
+		"This is an example command that does nothing",
+		simplecommand.Long(`Here is a much longer help description of this example-command
+that is shown when the --help flag is provided.
+
+This can include line breaks and be as long as you like.`),
+	)
+
+	// Set up simplecobra
+	x, err := simplecobra.New(command)
+	if err != nil {
+		panic(err)
+	}
+
+	// run our simplecobra command with the provided args, in a real program args would be os.Args[1:]
+	args := []string{"--help"}
+	if _, err := x.Execute(context.Background(), args); err != nil {
+		panic(err)
+	}
+
+	// Output:
+	// Here is a much longer help description of this example-command
+	// that is shown when the --help flag is provided.
+	//
+	// This can include line breaks and be as long as you like.
+	//
+	// Usage:
+	//   example-command [flags] [args]
+	//
+	// Flags:
+	//   -h, --help   help for example-command
+}
+
 // this is our custom command type
 type ourCommand struct {
 	// flags
