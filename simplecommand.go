@@ -10,6 +10,7 @@ import (
 
 	"github.com/andrewheberle/simpleviper"
 	"github.com/bep/simplecobra"
+	"github.com/spf13/viper"
 )
 
 // Command is the basis for creating your own [simplecobra.Commander] quickly.
@@ -37,6 +38,8 @@ type Command struct {
 	viperEnabled        bool
 	viperEnvPrefix      string
 	viperEnvKeyReplacer *strings.Replacer
+
+	viperlet *simpleviper.Viperlet
 }
 
 // New creates a bare minimum [*Command] with a name and a short description set
@@ -100,9 +103,11 @@ func (c *Command) PreRun(this, runner *simplecobra.Commandeer) error {
 			}
 		}
 
+		// set up viperlet
+		c.viperlet = simpleviper.New(opts...)
+
 		// bring in env vars and bind to flagset
-		err := simpleviper.New(opts...).Init(this.CobraCommand.Flags())
-		if err != nil {
+		if err := c.viperlet.Init(this.CobraCommand.Flags()); err != nil {
 			return err
 		}
 
@@ -116,6 +121,16 @@ func (c *Command) PreRun(this, runner *simplecobra.Commandeer) error {
 //
 // See [simplecobra.Commander] for more information.
 func (c *Command) Run(ctx context.Context, cd *simplecobra.Commandeer, args []string) error {
+	return nil
+}
+
+// Viper allows access to the underlying [*viper.Viper] instance when enabled.
+// Warning: This will return nil if Viper is not enabled for this command.
+func (c *Command) Viper() *viper.Viper {
+	if c.viperEnabled {
+		return c.viperlet.Viper()
+	}
+
 	return nil
 }
 
